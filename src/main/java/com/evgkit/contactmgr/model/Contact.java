@@ -23,6 +23,13 @@ public class Contact {
     public Contact() {
     }
 
+    Contact(ContactBuilder contactBuilder) {
+        this.firstName = contactBuilder.firstName;
+        this.lastName = contactBuilder.lastName;
+        this.email = contactBuilder.email;
+        this.phone = contactBuilder.phone;
+    }
+
     @Override
     public String toString() {
         return "Contact{" +
@@ -72,5 +79,31 @@ public class Contact {
 
     public void setPhone(Long phone) {
         this.phone = phone;
+    }
+
+    public static class ContactBuilder {
+        private String firstName;
+        private String lastName;
+        private String email;
+        private Long phone;
+
+        public ContactBuilder(String firstName, String lastName) {
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
+
+        public ContactBuilder withEmail(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public ContactBuilder withPhome(Long phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Contact build() {
+            return new Contact(this);
+        }
     }
 }
