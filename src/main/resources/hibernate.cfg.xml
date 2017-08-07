@@ -7,8 +7,8 @@
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.H2Dialect</property>
 
-        <!-- Create the db schema on startup-->
-        <property name="hbm2ddl.auto">create</property>
+        <!-- Init the db schema on startup-->
+        <property name="hbm2ddl.auto">update</property>
 
         <!-- Names the annotated entity class -->
         <mapping class="com.evgkit.contactmgr.model.Contact"/>
