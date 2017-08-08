@@ -8,6 +8,8 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import java.util.List;
 
 public class Application {
@@ -25,9 +27,7 @@ public class Application {
 
         save(contact);
 
-        for (Contact fetchedContact : fetchAllContacts()) {
-            System.out.println(fetchedContact);
-        }
+        fetchAllContacts().forEach(System.out::println);
     }
 
     private static void save(Contact contact) {
@@ -44,8 +44,10 @@ public class Application {
     private static List<Contact> fetchAllContacts() {
         Session session = sessionFactory.openSession();
 
-        Criteria criteria = session.createCriteria(Contact.class);
-        List<Contact> contacts = criteria.list();
+        CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+        CriteriaQuery<Contact> criteriaQuery = criteriaBuilder.createQuery(Contact.class);
+        criteriaQuery.from(Contact.class);
+        List<Contact> contacts = session.createQuery(criteriaQuery).getResultList();
 
         session.close();
 
