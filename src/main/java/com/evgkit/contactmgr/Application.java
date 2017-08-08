@@ -1,7 +1,7 @@
 package com.evgkit.contactmgr;
 
 import com.evgkit.contactmgr.model.Contact;
-import org.hibernate.Criteria;
+import com.github.javafaker.Faker;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
@@ -21,7 +21,9 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        Contact contact = new Contact.ContactBuilder("Dude", "Some")
+        Faker faker = new Faker();
+
+        Contact contact = new Contact.ContactBuilder(faker.firstName(), faker.lastName())
                 .withEmail("example@example.com")
                 .build();
 
@@ -30,11 +32,23 @@ public class Application {
         fetchAllContacts().forEach(System.out::println);
     }
 
-    private static void save(Contact contact) {
+    private static int save(Contact contact) {
         Session session = sessionFactory.openSession();
         session.beginTransaction();
 
-        session.save(contact);
+        int id = (int)session.save(contact);
+
+        session.getTransaction().commit();
+        session.close();
+
+        return id;
+    }
+
+    private static void delete(Contact contact) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.delete(contact);
 
         session.getTransaction().commit();
         session.close();
@@ -52,5 +66,25 @@ public class Application {
         session.close();
 
         return contacts;
+    }
+
+    private static Contact findContactById(int id) {
+        Session session = sessionFactory.openSession();
+
+        Contact contact = session.get(Contact.class, id);
+
+        session.close();
+
+        return contact;
+    }
+
+    private static void updateContact(Contact contact) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+
+        session.update(contact);
+
+        session.getTransaction().commit();
+        session.close();
     }
 }
